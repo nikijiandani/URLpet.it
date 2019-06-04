@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>TinyApp</title>
+</head>
+<body style="font-size:20px; padding:50px;">
+    <!-- Add EJS code here -->
+    <table style="width: 100%">
+      <tr>
+        <th>URL's</th>
+        <th>Shortened forms</th>
+      </tr>
+      <% for(key in urls) { %>
+        <tr>
+            <td><%= urls[key] %></td>
+            <td><%= key %></td>
+        </tr>
+      <% } %>
+      </table>
+      <a href="/">Try shortening your own URL on our homepage by clicking here.</a>
+</body>
+</html>
