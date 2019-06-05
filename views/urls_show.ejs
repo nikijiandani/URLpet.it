@@ -2,16 +2,11 @@
 <% include ./partials/_header %>
 
 <body style="font-size:20px; padding:50px;">
-    <table style="width: 100%">
-      <tr>
-        <th>Original URL</th>
-        <th>Shortened link</th>
-      </tr>
-      <tr>
-        <td><%= longURL %></td>
-        <td><a href=" <%= longURL %> " target="_blank">http://localhost:8080/u/<%= shortURL %></a></td>
-      </tr>
-      </table>
-      <a href="/urls/new">Try shortening your own URL by clicking here.</a>
+  <h1>ShortURL: <%= shortURL %></h1>
+  <form action="/urls/<%= shortURL %>" method="POST">
+    <input type="text" name="longURL" value="<%= longURL %>" class="form-control">
+    <button type="submit" class="btn btn-warning">Update</button>
+  </form>
+  <a href="/urls/new">Try shortening your own URL by clicking here.</a>
 </body>
 </html>
