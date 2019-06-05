@@ -18,7 +18,7 @@ function generateRandomString() {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.send("Welcome to my URL shortening app!");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -39,7 +39,10 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = { 
+    shortURL: req.params.shortURL, 
+    longURL: urlDatabase[req.params.shortURL] 
+  }
   res.render("urls_show", templateVars);
 });
 
@@ -50,6 +53,12 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect('/urls');
+});
+
+app.post("/urls/:id", (req, res) => {
+  let shortURL = `${req.params.id}`
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
