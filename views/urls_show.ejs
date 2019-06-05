@@ -4,12 +4,12 @@
 <body style="font-size:20px; padding:50px;">
     <table style="width: 100%">
       <tr>
-        <th>URL's</th>
-        <th>Shortened forms</th>
+        <th>Original URL</th>
+        <th>Shortened link</th>
       </tr>
       <tr>
         <td><%= longURL %></td>
-        <td><%= shortURL %></td>
+        <td><a href=" <%= longURL %> " target="_blank">http://localhost:8080/u/<%= shortURL %></a></td>
       </tr>
       </table>
       <a href="/urls/new">Try shortening your own URL by clicking here.</a>

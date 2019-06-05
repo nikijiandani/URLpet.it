@@ -4,16 +4,16 @@
 <body style="font-size:20px; padding:50px;">
     <table style="width: 100%">
       <tr>
-        <th>URL's</th>
+        <th>Original URL's</th>
         <th>Shortened forms</th>
       </tr>
       <% for(key in urls) { %>
         <tr>
             <td><%= urls[key] %></td>
-            <td><%= key %></td>
+            <td><a href="http://localhost:8080/u/<%= key %>" target="_blank">http://localhost:8080/u/<%= key %></a></td>
         </tr>
       <% } %>
       </table>
-      <a href="/urls/new">Try shortening your own URL on our homepage by clicking here.</a>
+      <a href="/urls/new">Try shortening your own URL by clicking here.</a>
 </body>
 </html>

@@ -40,15 +40,19 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  console.log(res);
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body.longURL);
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-;  res.redirect("/urls/" + shortURL);
+  res.redirect('/urls');
+  // res.redirect("/u/" + shortURL); 
 });
 
 app.listen(PORT, () => {
