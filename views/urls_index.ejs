@@ -11,6 +11,11 @@
         <tr>
             <td><%= urls[key] %></td>
             <td><a href="http://localhost:8080/u/<%= key %>" target="_blank">http://localhost:8080/u/<%= key %></a></td>
+            <td>
+              <form method="POST" action="/urls/<%= key %>/delete">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
         </tr>
       <% } %>
       </table>
