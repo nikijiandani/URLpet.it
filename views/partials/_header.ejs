@@ -12,15 +12,15 @@
   </head>
   <body style="padding:50px;">
     <h1><a href="/" style="text-decoration: none">TinyURL</a></h1>
-    <% if(username) { %>
-        <p>Welcome <%= username %> !</p>
+    <% if(typeof user !== "undefined" && user) { %>
+        <p>Welcome <%= user.email %> !</p>
         <form method="POST" action="/logout">
           <button type="submit" class="btn btn-dark">Logout</button>
         </form>
     <% } else { %>
       <form action="/login" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" name="username" >
+        <label for="username">Email:</label>
+        <input type="text" name="email" >
         <button type="submit" class="btn btn-dark">Login</button>
       </form>
     <% } %>

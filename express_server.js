@@ -44,11 +44,21 @@ function checkIfPropertyValueExists (obj, prop, value) {
   return false;
 }
 
+function findUser (email) {
+  for(id in users) {
+    if(users[id].email === email) {
+      return users[id];
+    }
+  }
+  return false;
+}
+
 // ROOT ROUTE
 app.get("/", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies["user_id"]]
   }
+  console.log(templateVars);
   res.render("urls_root", templateVars);
 });
 
@@ -60,7 +70,7 @@ app.get("/urls.json", (req, res) => {
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies["user_id"]],
   }
   res.render("urls_register", templateVars);
 })
@@ -68,7 +78,7 @@ app.get("/register", (req, res) => {
 //CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies["user_id"]],
   }
   res.render("urls_new", templateVars);
 });
@@ -77,7 +87,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   }
   res.render("urls_index", templateVars);
 });
@@ -87,7 +97,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL] ,
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   }
   res.render("urls_show", templateVars);
 });
@@ -127,7 +137,6 @@ app.post("/register", (req, res) => {
     res.status(400);
     res.render("urls_register", 
     { 
-      username: req.cookies["username"],
       error1: "Email or Password is an empty string"
     })
   } else {
@@ -135,7 +144,6 @@ app.post("/register", (req, res) => {
         res.status(400);
         res.render("urls_register",
         { 
-          username: req.cookies["username"], 
           error2: "This email is already in use" 
         })
       } else {
@@ -153,13 +161,14 @@ app.post("/register", (req, res) => {
   })
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  let uId = findUser(req.body.email);
+  res.cookie("user_id", uId.id);
   console.log("Cookie created sucessfully");
   res.redirect('/urls');
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect('/urls');
 })
 
