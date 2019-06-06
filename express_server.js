@@ -108,6 +108,11 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+//LOGIN PAGE
+app.get("/login", (req, res) => {
+  res.render("urls_login");
+})
+
 //********POST ROUTES********
 
 //CREATE A NEW TINYURL 
@@ -159,6 +164,7 @@ app.post("/register", (req, res) => {
       }
     }
   })
+
 
 app.post("/login", (req, res) => {
   let uId = findUser(req.body.email);
