@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//set viewing engine
 app.set("view engine", "ejs");
 
 var urlDatabase = {
@@ -29,6 +28,8 @@ const users = {
   }
 }
 
+//HELPER FUNCTIONS
+
 function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
 }
@@ -43,6 +44,7 @@ function checkIfPropertyValueExists (obj, prop, value) {
   return false;
 }
 
+// ROOT ROUTE
 app.get("/", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -50,14 +52,12 @@ app.get("/", (req, res) => {
   res.render("urls_root", templateVars);
 });
 
+//VIEW URLS IN JSON FORMAT
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
+//SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -65,6 +65,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 })
 
+//CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -72,6 +73,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+//VIEW ALL URLS
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
@@ -80,6 +82,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+//URL SHOW & EDIT PAGE
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { 
     shortURL: req.params.shortURL, 
@@ -89,29 +92,35 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//URL REDIRECTOR
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
+//********POST ROUTES********
+
+//CREATE A NEW TINYURL 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
 
+//EDIT YOUR TINYURL
 app.post("/urls/:id", (req, res) => {
   let shortURL = `${req.params.id}`
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
 
+//DELETE URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 });
 
-// register POST route
+// REGISTER A NEW USER
 app.post("/register", (req, res) => {
   let userId = generateRandomString();
   if(req.body.email === "" || req.body.password === ""){
@@ -130,6 +139,7 @@ app.post("/register", (req, res) => {
           error2: "This email is already in use" 
         })
       } else {
+        //ADD THE USER TO THE DATABSE
           users[userId] = {
             id: userId,
             email: req.body.email,
@@ -154,5 +164,5 @@ app.post("/logout", (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Server Started!!! TinyURL is listening on port ${PORT}!`);
 });
