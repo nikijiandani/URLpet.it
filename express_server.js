@@ -16,6 +16,19 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
 }
@@ -87,6 +100,18 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 });
+
+app.post("/register", (req, res) => {
+  let userId = generateRandomString();
+  users[userId] = {
+    id: userId,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie("user_id", userId);
+  console.log(users);
+  res.redirect('/urls');
+})
 
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
