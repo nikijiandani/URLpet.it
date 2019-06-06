@@ -58,7 +58,6 @@ app.get("/", (req, res) => {
   let templateVars = {
     user: users[req.cookies["user_id"]]
   }
-  console.log(templateVars);
   res.render("urls_root", templateVars);
 });
 
@@ -159,7 +158,6 @@ app.post("/register", (req, res) => {
             password: req.body.password
           }
           res.cookie("user_id", userId);
-          console.log(users);
           res.redirect('/urls');
       }
     }
@@ -168,8 +166,14 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
   let uId = findUser(req.body.email);
+  if(!uId){
+    res.status(403);
+    res.render("urls_login", {error: "No user found by that name!"})
+  } else if(req.body.password !== uId["password"]){
+    res.status(403);
+    res.render("urls_login", {error: "Your password is incorrect!"})
+  }
   res.cookie("user_id", uId.id);
-  console.log("Cookie created sucessfully");
   res.redirect('/urls');
 });
 

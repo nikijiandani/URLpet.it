@@ -9,15 +9,23 @@
     <title>TinyApp</title>
   </head>
   <body style="padding:50px;">
-    
+
     <h1><a href="/" style="text-decoration: none">TinyURL</a></h1>
+    <% if(typeof error !== "undefined" && error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong><%= error %></strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    <% } %>
 
     <form action="/login" method="POST">
       <label for="username">Email:</label>
       <input type="text" name="email" >
       <label for="password">Password:</label>
       <input type="password" name="password" >
-
+      
       <button type="submit" class="btn btn-dark">Login</button>
     </form>
 
