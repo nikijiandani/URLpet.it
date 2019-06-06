@@ -3,6 +3,23 @@
 
     <h3>Register to create a TinyURL</h3>
     <form class="form-block" action="/register" method="POST">
+      <% if(typeof(error1) !== "undefined" && error1) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <p><%= error1 %></p>
+        <strong>Please enter a valid username and password!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } else if (typeof(error2) !== "undefined" && error2) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <p><%= error2 %></p>
+            <strong>Please enter another email!</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <% } %>
       <div class="form-group mb-2">
         <!-- Email -->
         <label for="email">Email:</label>

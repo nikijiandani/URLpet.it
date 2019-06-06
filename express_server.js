@@ -33,6 +33,16 @@ function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
 }
 
+function checkIfPropertyValueExists (obj, prop, value) {
+  let myKeys = Object.keys(obj);
+  for(let i = 0; i < myKeys.length; i++){
+    if(obj[myKeys[i]][prop] === value){
+      return true;
+    }
+  }
+  return false;
+}
+
 app.get("/", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -101,17 +111,36 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect('/urls');
 });
 
+// register POST route
 app.post("/register", (req, res) => {
   let userId = generateRandomString();
-  users[userId] = {
-    id: userId,
-    email: req.body.email,
-    password: req.body.password
-  }
-  res.cookie("user_id", userId);
-  console.log(users);
-  res.redirect('/urls');
-})
+  if(req.body.email === "" || req.body.password === ""){
+    res.status(400);
+    res.render("urls_register", 
+    { 
+      username: req.cookies["username"],
+      error1: "Email or Password is an empty string"
+    })
+  } else {
+      if(checkIfPropertyValueExists(users, "email", req.body.email)){
+        res.status(400);
+        res.render("urls_register",
+        { 
+          username: req.cookies["username"], 
+          error2: "This email is already in use" 
+        })
+      } else {
+          users[userId] = {
+            id: userId,
+            email: req.body.email,
+            password: req.body.password
+          }
+          res.cookie("user_id", userId);
+          console.log(users);
+          res.redirect('/urls');
+      }
+    }
+  })
 
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
