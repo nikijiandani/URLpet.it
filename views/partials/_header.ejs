@@ -2,25 +2,25 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
-</head>
-<body style="font-size:20px; padding:50px;"></body>
-<h1>TinyURL</h1>
-<% if(username) { %>
-    <p>Welcome <%= username %> !</p>
-    <form method="POST" action="/logout">
-      <button type="submit" class="btn btn-dark">Logout</button>
-    </form>
-<% } else { %>
-  <form action="/login" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" name="username" >
-    <button type="submit" class="btn btn-dark">Login</button>
-  </form>
-<% } %>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>TinyApp</title>
+  </head>
+  <body style="padding:50px;">
+    <h1>TinyURL</h1>
+    <% if(username) { %>
+        <p>Welcome <%= username %> !</p>
+        <form method="POST" action="/logout">
+          <button type="submit" class="btn btn-dark">Logout</button>
+        </form>
+    <% } else { %>
+      <form action="/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" name="username" >
+        <button type="submit" class="btn btn-dark">Login</button>
+      </form>
+    <% } %>
