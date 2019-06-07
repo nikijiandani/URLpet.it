@@ -1,23 +1,20 @@
 <!-- views/partials/_header.ejs -->
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width" initial-scale=1, shrink-to-fit="no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="/style.css" type="text/css">
-    <title>TinyApp</title>
-  </head>
-  <body>
-    <h1><a href="/" style="text-decoration: none">TinyURL</a></h1>
-    <% if(typeof user !== "undefined" && user) { %>
+    <h1 class="center"><a href="/" style="text-decoration: none">TinyURL</a></h1>
+    
+    <% if(locals.user) { %>
         <p>You are logged in as <%= user.email %> </p>
         <form method="POST" action="/logout">
           <button type="submit" class="btn btn-outline-primary">Logout</button>
         </form>
     <% } else { %>
-        <a href="/register" class="btn btn-outline-primary">Register</a>
-        <a href="/login" class="btn btn-outline-primary">Login</a>
+      <a href="/register" class="btn btn-outline-primary center">Register</a>
+      <a href="/login" class="btn btn-outline-primary center">Login</a>
+    <% } %>
+    <% if(locals.error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><%= error %></strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     <% } %>

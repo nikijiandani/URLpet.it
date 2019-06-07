@@ -1,9 +1,18 @@
-<!-- include header -->
-<% include ./partials/_header %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- include head partial -->
+    <% include ./partials/_head %>
+  </head>
+  <body>
+    <!-- include header partial -->
+    <% include ./partials/_header %>
 
     <h2>Welcome to myTinyURL</h2>
     <a href="/urls/new">Try shortening your own URL by clicking here.</a>
     <p>New User? <a href="/register">Click here to register!</a></p>
 
-<!-- include footer -->
-<% include ./partials/_footer %>
+    <!-- include footer -->
+    <% include ./partials/_footer %>
+  </body>
+</html>

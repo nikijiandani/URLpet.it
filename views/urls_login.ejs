@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/style.css">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <title>TinyApp</title>
+    <!-- include head partial -->
+    <% include ./partials/_head %>
   </head>
   <body>
-
-    <h1><a href="/" style="text-decoration: none">TinyURL</a></h1>
-    <% if(typeof error !== "undefined" && error) { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <strong><%= error %></strong>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-    <% } %>
+    <!-- include header partial -->
+    <% include ./partials/_header %>
 
     <form action="/login" method="POST">
-      <label for="email">Email:</label>
-      <input type="text" name="email" >
-      <label for="password">Password:</label>
-      <input type="password" name="password" >
 
-      <button type="submit" class="btn btn-dark">Login</button>
-      <a href="/register" class="btn btn-dark">Register</a>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input class="form-control" type="text" name="email" >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input class="form-control" type="password" name="password" >
+      </div>
+
+      <button type="submit" class="btn btn-outline-primary">Submit</button>
+
     </form>
-
-<!-- include footer -->
-<% include ./partials/_footer %>
+    <!-- include footer -->
+    <% include ./partials/_footer %>
+  </body>
+</html>
