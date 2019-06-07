@@ -35,12 +35,10 @@ function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
 }
 
-function findKeyAndValueInObject (obj, value) {
-  for(key in obj) {
-    for(prop in obj[key]){
-      if(obj[key][prop] === value) {
-        return [key, obj[key][prop]];
-      }
+function findUserByEmail (email) {
+  for(key in users) {
+    if(users[key]["email"] === email){
+      return users[key];
     }
   }
   return false;
@@ -62,7 +60,7 @@ app.get("/urls.json", (req, res) => {
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    user: users[req.cookies["user_id"]],
+    user: users[req.cookies["user_id"]]
   }
   res.render("urls_register", templateVars);
 })
@@ -129,44 +127,33 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // REGISTER A NEW USER
 app.post("/register", (req, res) => {
+  if(!req.body.email || !req.body.password){
+    return res.status(400).render("urls_register", { error: "Email or password is invalid" });
+  }
+  
+  if(findUserByEmail(req.body.email)){
+    return res.status(400).render("urls_register", { error: "This email is already in use" })
+  }
+  
+  //ADD THE USER TO THE DATABSE
   let userId = generateRandomString();
-  if(req.body.email === "" || req.body.password === ""){
-    res.status(400);
-    res.render("urls_register", 
-    { 
-      error1: "Email or Password is an empty string"
-    })
-  } else {
-      if(findKeyAndValueInObject(users, req.body.email) === 'false'){
-        res.status(400);
-        res.render("urls_register",
-        { 
-          error2: "This email is already in use" 
-        })
-      } else {
-        //ADD THE USER TO THE DATABSE
-          users[userId] = {
-            id: userId,
-            email: req.body.email,
-            password: req.body.password
-          }
-          res.cookie("user_id", userId);
-          res.redirect('/urls');
-      }
-    }
-  })
+  users[userId] = {
+    id: userId,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie("user_id", userId);
+  res.redirect('/urls');
+})
 
 
 app.post("/login", (req, res) => {
-  let idAndEmail = findKeyAndValueInObject(users, req.body.email);
-  let idAndPassword = findKeyAndValueInObject(users, req.body.password);
-  if(!idAndEmail || !idAndPassword){
-    res.status(403);
-    res.render("urls_login", {error: "Your Email or Password is incorrect!"})
-  } else if(idAndEmail[0] === idAndPassword[0]){
-    let uId = idAndEmail[0];
-    res.cookie("user_id", uId);
-    res.redirect('/urls'); 
+  const user = findUserByEmail(req.body.email);
+  if(!user || !req.body.password || req.body.password !== user.password){
+    return res.status(403).render("urls_login", {error: "Email or password is invalid"})
+  }
+  if(user && user.email === req.body.email && user.password === req.body.password){
+    return res.cookie("user_id", user.id).redirect('/urls'); 
   }
 });
 
