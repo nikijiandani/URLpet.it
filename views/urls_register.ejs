@@ -1,7 +1,8 @@
 <!-- include header -->
 <% include ./partials/_header %>
 
-    <h3>Register to create a TinyURL</h3>
+    <h3>Create Account</h3>
+
     <form class="form-block" action="/register" method="POST">
       <% if(typeof(error1) !== "undefined" && error1) { %>
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -27,7 +28,7 @@
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
       </div>
         <!-- Password -->
-      <div class="form-group mb-2">
+        <div class="form-group mb-2">
         <label for="password">Password:</label>
         <input class="form-control" type="password" name="password" placeholder="Password" style="width: 300px; margin: 1em">
         <button type="submit" class="btn btn-primary">Register</button>

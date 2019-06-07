@@ -4,7 +4,6 @@ const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
-
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -34,20 +33,12 @@ function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
 }
 
-function checkIfPropertyValueExists (obj, prop, value) {
-  let myKeys = Object.keys(obj);
-  for(let i = 0; i < myKeys.length; i++){
-    if(obj[myKeys[i]][prop] === value){
-      return true;
-    }
-  }
-  return false;
-}
-
-function findUser (email) {
-  for(id in users) {
-    if(users[id].email === email) {
-      return users[id];
+function findKeyAndValueInObject (obj, value) {
+  for(key in obj) {
+    for(prop in obj[key]){
+      if(obj[key][prop] === value) {
+        return [key, obj[key][prop]];
+      }
     }
   }
   return false;
@@ -144,7 +135,7 @@ app.post("/register", (req, res) => {
       error1: "Email or Password is an empty string"
     })
   } else {
-      if(checkIfPropertyValueExists(users, "email", req.body.email)){
+      if(findKeyAndValueInObject(users, req.body.email) === 'false'){
         res.status(400);
         res.render("urls_register",
         { 
@@ -165,16 +156,19 @@ app.post("/register", (req, res) => {
 
 
 app.post("/login", (req, res) => {
-  let uId = findUser(req.body.email);
-  if(!uId){
+  let idAndEmail = findKeyAndValueInObject(users, req.body.email);
+  let idAndPassword = findKeyAndValueInObject(users, req.body.password);
+  if(!idAndEmail){
     res.status(403);
     res.render("urls_login", {error: "No user found by that name!"})
-  } else if(req.body.password !== uId["password"]){
+  } else if(!idAndPassword){
     res.status(403);
     res.render("urls_login", {error: "Your password is incorrect!"})
+  } else if(idAndEmail[0] === idAndPassword[0]){
+    let uId = idAndEmail[0];
+    res.cookie("user_id", uId);
+    res.redirect('/urls'); 
   }
-  res.cookie("user_id", uId.id);
-  res.redirect('/urls');
 });
 
 app.post("/logout", (req, res) => {
