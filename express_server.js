@@ -158,12 +158,9 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   let idAndEmail = findKeyAndValueInObject(users, req.body.email);
   let idAndPassword = findKeyAndValueInObject(users, req.body.password);
-  if(!idAndEmail){
+  if(!idAndEmail || !idAndPassword){
     res.status(403);
-    res.render("urls_login", {error: "No user found by that name!"})
-  } else if(!idAndPassword){
-    res.status(403);
-    res.render("urls_login", {error: "Your password is incorrect!"})
+    res.render("urls_login", {error: "Your Email or Password is incorrect!"})
   } else if(idAndEmail[0] === idAndPassword[0]){
     let uId = idAndEmail[0];
     res.cookie("user_id", uId);
