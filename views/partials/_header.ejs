@@ -14,9 +14,9 @@
     <% if(typeof user !== "undefined" && user) { %>
         <p>You are logged in as <%= user.email %> </p>
         <form method="POST" action="/logout">
-          <button type="submit" class="btn btn-dark">Logout</button>
+          <button type="submit" class="btn btn-outline-primary">Logout</button>
         </form>
     <% } else { %>
-        <a href="/register" class="btn btn-dark">Register</a>
-        <a href="/login" class="btn btn-dark">Login</a>
+        <a href="/register" class="btn btn-outline-primary">Register</a>
+        <a href="/login" class="btn btn-outline-primary">Login</a>
     <% } %>

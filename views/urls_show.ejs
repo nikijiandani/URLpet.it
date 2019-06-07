@@ -4,7 +4,7 @@
   <h1>ShortURL: <%= shortURL %></h1>
   <form action="/urls/<%= shortURL %>" method="POST">
     <input type="text" name="longURL" value="<%= longURL %>" class="form-control">
-    <button type="submit" class="btn btn-warning"> Save</button>
+    <button type="submit" class="btn btn-outline-warning"> Save</button>
   </form>
   <a href="/urls/new">Try shortening your own URL by clicking here.</a>
 
