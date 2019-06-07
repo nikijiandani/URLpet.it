@@ -12,8 +12,8 @@ app.set("view engine", "ejs");
 app.use(express.static('public'));
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID"},
+  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" }
 };
 
 const users = { 
@@ -67,19 +67,18 @@ app.get("/register", (req, res) => {
 
 //CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {
-    user: users[req.cookies["user_id"]],
+  if(req.cookies["user_id"]){
+    return res.render("urls_new", { user: users[req.cookies["user_id"]] });
   }
-  res.render("urls_new", templateVars);
+  return res.cookie("error", "You must be logged in to create a new URL!").redirect("/login");
 });
 
 //VIEW ALL URLS
 app.get("/urls", (req, res) => {
-  let templateVars = { 
-    urls: urlDatabase,
-    user: users[req.cookies["user_id"]]
+  if(req.cookies["user_id"]){
+    res.render("urls_index", { urls: urlDatabase, user: users[req.cookies["user_id"]] });
   }
-  res.render("urls_index", templateVars);
+  res.render("urls_login", { error: "You must be logged in to do that!" });
 });
 
 //URL SHOW & EDIT PAGE
@@ -100,7 +99,12 @@ app.get("/u/:shortURL", (req, res) => {
 
 //LOGIN PAGE
 app.get("/login", (req, res) => {
-  res.render("urls_login");
+  templateVars = {};
+  if(req.cookies.error){
+    templateVars.error = req.cookies.error;
+    res.clearCookie("error");
+  };
+  res.render("urls_login", templateVars);
 })
 
 //********POST ROUTES********
