@@ -7,9 +7,10 @@
     <meta name="viewport" content="width=device-width" initial-scale=1, shrink-to-fit="no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css" type="text/css">
     <title>TinyApp</title>
   </head>
-  <body style="padding:50px;">
+  <body>
     <h1><a href="/" style="text-decoration: none">TinyURL</a></h1>
     <% if(typeof user !== "undefined" && user) { %>
         <p>You are logged in as <%= user.email %> </p>
