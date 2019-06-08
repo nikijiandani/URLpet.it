@@ -22,17 +22,17 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur", 10),
   },
- "user2RandomID": {
+  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk", 10)
   },
  "23rf45": {
     id: "23rf45", 
     email: "hello@example.com", 
-    password: "pass"
+    password: bcrypt.hashSync("pass", 10)
   }
 }
 
@@ -182,10 +182,11 @@ app.post("/register", (req, res) => {
   
   //ADD THE USER TO THE DATABSE
   let userId = generateRandomString();
+  let hashedPassword = bcrypt.hashSync(req.body.password, 10)
   users[userId] = {
     id: userId,
     email: req.body.email,
-    password: req.body.password
+    password: hashedPassword 
   }
   res.cookie("user_id", userId);
   res.redirect('/urls');
@@ -194,10 +195,10 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
   const user = findUserByEmail(req.body.email);
-  if(!user || !req.body.password || req.body.password !== user.password){
+  if(!user || !req.body.password || !bcrypt.compareSync(req.body.password, user.password)){
     return res.status(403).render("urls_login", {error: "Email or password is invalid"})
   }
-  if(user && user.email === req.body.email && user.password === req.body.password){
+  if(user && user.email === req.body.email && bcrypt.compareSync(req.body.password, user.password)){
     return res.cookie("user_id", user.id).redirect('/urls'); 
   }
 });
