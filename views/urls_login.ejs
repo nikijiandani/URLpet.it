@@ -5,9 +5,11 @@
     <% include ./partials/_head %>
   </head>
   <body>
-    <!-- include header partial -->
-    <% include ./partials/_header %>
-
+    <header>
+      <!-- include header partial -->
+      <% include ./partials/_header %>
+    </header>
+    <% if(!locals.user) { %>
     <form action="/login" method="POST">
 
       <div class="form-group">
@@ -21,7 +23,7 @@
       </div>
 
       <button type="submit" class="btn btn-outline-primary">Submit</button>
-
+    <% } %>
     </form>
     <!-- include footer -->
     <% include ./partials/_footer %>

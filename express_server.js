@@ -57,8 +57,6 @@ function urlsForUser(id) {
 
 // ROOT ROUTE
 app.get("/", (req, res) => {
-  // console.log(req.cookies);
-  // console.log(res.cookies);
   let templateVars = {
     user: users[req.cookies["user_id"]]
   }
