@@ -13,7 +13,8 @@ app.use(express.static('public'));
 
 var urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID"},
-  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" }
+  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" },
+  "b6UTxQ": { longURL: "http://www.cnn.com", userID: "user2RandomID" }
 };
 
 const users = { 
@@ -44,17 +45,24 @@ function findUserByEmail (email) {
   return false;
 }
 
+function urlsForUser(id) {
+  let result = {}
+  for(key in urlDatabase){
+    if(urlDatabase[key]["userID"] === id){
+      result[key] = urlDatabase[key];
+    }
+  }
+  return result;
+}
+
 // ROOT ROUTE
 app.get("/", (req, res) => {
+  // console.log(req.cookies);
+  // console.log(res.cookies);
   let templateVars = {
     user: users[req.cookies["user_id"]]
   }
   res.render("urls_root", templateVars);
-});
-
-//VIEW URLS IN JSON FORMAT
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
 });
 
 //SHOW REGISTER PAGE
@@ -67,66 +75,89 @@ app.get("/register", (req, res) => {
 
 //CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
-  if(req.cookies["user_id"]){
-    return res.render("urls_new", { user: users[req.cookies["user_id"]] });
-  }
-  return res.cookie("error", "You must be logged in to create a new URL!").redirect("/login");
+  let cookieId = req.cookies["user_id"];
+  console.log(cookieId);
+  console.log(users[cookieId]);
+  if(!cookieId){
+    return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
+  } else if (cookieId === users[cookieId]["id"]){
+    return res.render("urls_new", { user: users[cookieId] });
+  } 
+  return res.cookie("error", "You encountered an error! Please try again.", { maxAge: 20000 }).redirect("/login");
 });
 
 //VIEW ALL URLS
 app.get("/urls", (req, res) => {
+  let usersUrls = urlsForUser(req.cookies["user_id"]);
   if(req.cookies["user_id"]){
-    res.render("urls_index", { urls: urlDatabase, user: users[req.cookies["user_id"]] });
+    return res.render("urls_index", { urls: usersUrls, user: users[req.cookies["user_id"]] });
   }
-  res.render("urls_login", { error: "You must be logged in to do that!" });
+  return res.render("urls_login", { error: "You must be logged in to do that!" });
 });
 
 //URL SHOW & EDIT PAGE
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { 
-    shortURL: req.params.shortURL, 
-    longURL: urlDatabase[req.params.shortURL] ,
-    user: users[req.cookies["user_id"]]
+  if(req.cookies["user_id"] === users[req.cookies["user_id"]]["id"]){
+    let usersUrls = urlsForUser(req.cookies["user_id"]);
+    let templateVars = { 
+      shortURL: req.params.shortURL, 
+      longURL: usersUrls[req.params.shortURL]["longURL"],
+      user: users[req.cookies["user_id"]]
+    }
+    return res.render("urls_show", templateVars);
   }
-  res.render("urls_show", templateVars);
+  return res.render("urls_login", { error: "You must be logged in to do that!" });
 });
 
 //URL REDIRECTOR
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL]["longURL"];
   res.redirect(longURL);
 });
 
 //LOGIN PAGE
 app.get("/login", (req, res) => {
-  templateVars = {};
+  let templateVars = {
+    user: users[req.cookies["user_id"]],
+  }
   if(req.cookies.error){
     templateVars.error = req.cookies.error;
     res.clearCookie("error");
   };
-  res.render("urls_login", templateVars);
+  return res.render("urls_login", templateVars);
 })
 
 //********POST ROUTES********
 
 //CREATE A NEW TINYURL 
 app.post("/urls", (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect('/urls');
+  if(req.cookies.user_id){
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = {}
+    urlDatabase[shortURL]["longURL"] = req.body.longURL;
+    urlDatabase[shortURL]["userID"] = req.cookies["user_id"];
+    return res.redirect('/urls');
+  }
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
 });
 
 //EDIT YOUR TINYURL
 app.post("/urls/:id", (req, res) => {
-  let shortURL = `${req.params.id}`
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect('/urls');
+  if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
+    let shortURL = `${req.params.id}`
+    urlDatabase[shortURL]["longURL"] = req.body.longURL;
+    return res.redirect('/urls');
+  }
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
 });
 
 //DELETE URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls');
+  if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
+    delete urlDatabase[req.params.shortURL];
+    return res.redirect('/urls');
+  }
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
 });
 
 // REGISTER A NEW USER
@@ -163,7 +194,8 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect('/urls');
+  res.clearCookie("error");
+  res.redirect('/');
 })
 
 app.listen(PORT, () => {
