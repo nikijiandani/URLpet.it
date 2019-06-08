@@ -151,10 +151,13 @@ app.post("/urls/:id", (req, res) => {
 
 //DELETE URL
 app.post("/urls/:shortURL/delete", (req, res) => {
+ if(!req.cookies.user_id){
+   return res.status(403).redirect("/login");
+ }
   if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
     delete urlDatabase[req.params.shortURL];
     return res.redirect('/urls');
-  }
+  } 
   return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
 });
 
