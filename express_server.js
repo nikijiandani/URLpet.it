@@ -3,6 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -27,6 +28,11 @@ const users = {
     id: "user2RandomID", 
     email: "user2@example.com", 
     password: "dishwasher-funk"
+  },
+ "23rf45": {
+    id: "23rf45", 
+    email: "hello@example.com", 
+    password: "pass"
   }
 }
 
