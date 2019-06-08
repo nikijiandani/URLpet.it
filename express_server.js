@@ -74,8 +74,6 @@ app.get("/register", (req, res) => {
 //CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
   let cookieId = req.cookies["user_id"];
-  console.log(cookieId);
-  console.log(users[cookieId]);
   if(!cookieId){
     return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
   } else if (cookieId === users[cookieId]["id"]){
@@ -95,6 +93,9 @@ app.get("/urls", (req, res) => {
 
 //URL SHOW & EDIT PAGE
 app.get("/urls/:shortURL", (req, res) => {
+  if(!req.cookies["user_id"] || req.cookies["user_id"] !== users[req.cookies["user_id"]]["id"]){
+    return res.redirect("/login");
+  }
   if(req.cookies["user_id"] === users[req.cookies["user_id"]]["id"]){
     let usersUrls = urlsForUser(req.cookies["user_id"]);
     let templateVars = { 
@@ -104,7 +105,6 @@ app.get("/urls/:shortURL", (req, res) => {
     }
     return res.render("urls_show", templateVars);
   }
-  return res.render("urls_login", { error: "You must be logged in to do that!" });
 });
 
 //URL REDIRECTOR
@@ -136,29 +136,32 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortURL]["userID"] = req.cookies["user_id"];
     return res.redirect('/urls');
   }
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
 });
 
 //EDIT YOUR TINYURL
 app.post("/urls/:id", (req, res) => {
+  if(!req.cookies.user_id){
+    return res.redirect("/login");
+  }
   if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
     let shortURL = `${req.params.id}`
     urlDatabase[shortURL]["longURL"] = req.body.longURL;
     return res.redirect('/urls');
   }
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
 });
 
 //DELETE URL
 app.post("/urls/:shortURL/delete", (req, res) => {
- if(!req.cookies.user_id){
-   return res.status(403).redirect("/login");
- }
+  if(!req.cookies.user_id){
+    return res.status(403).redirect("/login");
+  }
   if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
     delete urlDatabase[req.params.shortURL];
     return res.redirect('/urls');
   } 
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 900000 }).redirect("/login");
+  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
 });
 
 // REGISTER A NEW USER

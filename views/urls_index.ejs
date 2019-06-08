@@ -17,6 +17,7 @@
         <tr>
             <td><%= urls[key]["longURL"] %></td>
             <td><a href="http://localhost:8080/u/<%= key %>" target="_blank">http://localhost:8080/u/<%= key %></a></td>
+            <% if (locals. user) { %>
             <td>
                   <a href="/urls/<%= key %>" class="btn btn-outline-warning">Edit</a>
             </td>
@@ -25,6 +26,7 @@
                 <button type="submit" class="btn btn-outline-danger">Delete</button>
               </form>
             </td>
+            <% } %>
         </tr>
       <% } %>
       </table>
