@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ["myx1anuts", "ghxbchjxgyzxftdyc"]
+}));
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
@@ -63,51 +66,54 @@ function urlsForUser(id) {
 
 // ROOT ROUTE
 app.get("/", (req, res) => {
-  let templateVars = {
-    user: users[req.cookies["user_id"]]
+  if(req.session.user_id){
+    return res.redirect("/urls");
   }
-  res.render("urls_root", templateVars);
+  res.redirect("/login");
 });
 
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    user: users[req.cookies["user_id"]]
+    user: users[req.session.user_id]
   }
   res.render("urls_register", templateVars);
 })
 
 //CREATE NEW TINYURL 
 app.get("/urls/new", (req, res) => {
-  let cookieId = req.cookies["user_id"];
+  let cookieId = req.session.user_id;
   if(!cookieId){
-    return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
-  } else if (cookieId === users[cookieId]["id"]){
+    req.session.error = "You must be logged in to do that!"
+    return res.redirect("/login");
+  }
+  if (cookieId === users[cookieId]["id"]){
     return res.render("urls_new", { user: users[cookieId] });
   } 
-  return res.cookie("error", "You encountered an error! Please try again.", { maxAge: 20000 }).redirect("/login");
+  req.session.error = "You encountered an error! Please try again."
+  res.redirect("/login");
 });
 
 //VIEW ALL URLS
 app.get("/urls", (req, res) => {
-  let usersUrls = urlsForUser(req.cookies["user_id"]);
-  if(req.cookies["user_id"]){
-    return res.render("urls_index", { urls: usersUrls, user: users[req.cookies["user_id"]] });
+  let usersUrls = urlsForUser(req.session.user_id);
+  if(req.session.user_id){
+    return res.render("urls_index", { urls: usersUrls, user: users[req.session.user_id] });
   }
-  return res.render("urls_login", { error: "You must be logged in to do that!" });
+  res.render("urls_login", { error: "You must be logged in to do that!" });
 });
 
 //URL SHOW & EDIT PAGE
 app.get("/urls/:shortURL", (req, res) => {
-  if(!req.cookies["user_id"] || req.cookies["user_id"] !== users[req.cookies["user_id"]]["id"]){
+  if(!req.session.user_id || req.session.user_id !== users[req.session.user_id]["id"]){
     return res.redirect("/login");
   }
-  if(req.cookies["user_id"] === users[req.cookies["user_id"]]["id"]){
-    let usersUrls = urlsForUser(req.cookies["user_id"]);
+  if(req.session.user_id === users[req.session.user_id]["id"]){
+    let usersUrls = urlsForUser(req.session.user_id);
     let templateVars = { 
       shortURL: req.params.shortURL, 
       longURL: usersUrls[req.params.shortURL]["longURL"],
-      user: users[req.cookies["user_id"]]
+      user: users[req.session.user_id]
     }
     return res.render("urls_show", templateVars);
   }
@@ -122,52 +128,54 @@ app.get("/u/:shortURL", (req, res) => {
 //LOGIN PAGE
 app.get("/login", (req, res) => {
   let templateVars = {
-    user: users[req.cookies["user_id"]],
+    user: users[req.session.user_id],
   }
-  if(req.cookies.error){
-    templateVars.error = req.cookies.error;
-    res.clearCookie("error");
+  if(req.session.error){
+    templateVars.error = req.session.error;
   };
-  return res.render("urls_login", templateVars);
+  res.render("urls_login", templateVars);
 })
 
 //********POST ROUTES********
 
 //CREATE A NEW TINYURL 
 app.post("/urls", (req, res) => {
-  if(req.cookies.user_id){
+  if(req.session.user_id){
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = {}
     urlDatabase[shortURL]["longURL"] = req.body.longURL;
-    urlDatabase[shortURL]["userID"] = req.cookies["user_id"];
+    urlDatabase[shortURL]["userID"] = req.session.user_id;
     return res.redirect('/urls');
   }
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
+  req.session.error = "You must be logged in to do that!";
+  res.redirect("/login");
 });
 
 //EDIT YOUR TINYURL
 app.post("/urls/:id", (req, res) => {
-  if(!req.cookies.user_id){
+  if(!req.session.user_id){
     return res.redirect("/login");
   }
-  if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
+  if(req.session.user_id === users[req.session.user_id]["id"]){
     let shortURL = `${req.params.id}`
     urlDatabase[shortURL]["longURL"] = req.body.longURL;
     return res.redirect('/urls');
   }
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
+  req.session.error = "You must be logged in to do that!";
+  res.redirect("/login");
 });
 
 //DELETE URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if(!req.cookies.user_id){
+  if(!req.session.user_id){
     return res.status(403).redirect("/login");
   }
-  if(req.cookies.user_id === users[req.cookies["user_id"]]["id"]){
+  if(req.session.user_id === users[req.session.user_id]["id"]){
     delete urlDatabase[req.params.shortURL];
     return res.redirect('/urls');
   } 
-  return res.cookie("error", "You must be logged in to do that!", { maxAge: 20000 }).redirect("/login");
+  req.session.error = "You must be logged in to do that!";
+  res.redirect("/login");
 });
 
 // REGISTER A NEW USER
@@ -188,7 +196,8 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: hashedPassword 
   }
-  res.cookie("user_id", userId);
+  // res.cookie("user_id", userId);
+  req.session.user_id = userId;
   res.redirect('/urls');
 })
 
@@ -198,14 +207,14 @@ app.post("/login", (req, res) => {
   if(!user || !req.body.password || !bcrypt.compareSync(req.body.password, user.password)){
     return res.status(403).render("urls_login", {error: "Email or password is invalid"})
   }
-  if(user && user.email === req.body.email && bcrypt.compareSync(req.body.password, user.password)){
-    return res.cookie("user_id", user.id).redirect('/urls'); 
+  if(user && user.email === req.body.email && bcrypt.compareSync(req.body.password, user.password)) {
+    req.session.user_id = user.id;
+    res.redirect('/urls');
   }
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
-  res.clearCookie("error");
+  req.session = null
   res.redirect('/');
 })
 
