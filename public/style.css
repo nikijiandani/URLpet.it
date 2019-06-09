@@ -15,6 +15,12 @@ h3 {
   text-align: left;
   margin: 2em;
 }
+tbody tr:hover {
+  background-color: #f2fff6;
+}
+.inline {
+  display: inline;
+}
 .logged-in {
   display: flex;
   justify-content: center;
@@ -35,9 +41,6 @@ h3 {
 }
 .btn-outline-primary {
   margin-top: 1em;
-}
-tbody tr:hover {
-  background-color: #f2fff6;
 }
 #register {
   width: 326px;
