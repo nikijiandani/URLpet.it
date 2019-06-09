@@ -9,7 +9,8 @@
     <% include ./partials/_header %>
     
     <h3>ShortURL: <%= shortURL %></h3>
-    <form action="/urls/<%= shortURL %>" method="POST">
+    <a href="http://localhost:8080/u/<%= shortURL %>" target="_blank">http://localhost:8080/u/<%= shortURL %></a>
+    <form class="urls-show" action="/urls/<%= shortURL %>" method="POST">
       <div class="form-group">
         <label for="longURL">Edit URL:</label>
         <input type="text" name="longURL" value="<%= longURL %>" class="form-control">

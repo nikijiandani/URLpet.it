@@ -88,6 +88,9 @@ app.get("/login", (req, res) => {
 
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
+  if(req.session.user_id){
+    return res.redirect("/urls");
+  }
   let templateVars = {
     user: users[req.session.user_id],
   }
@@ -120,10 +123,11 @@ app.get("/urls", (req, res) => {
 //URL SHOW & EDIT PAGE
 app.get("/urls/:shortURL", (req, res) => {
   if(!req.session.user_id || req.session.user_id !== users[req.session.user_id]["id"]){
+    req.session.error = "You must be logged in to do that!";
     return res.redirect("/login");
   }
   if(!urlDatabase[req.params.shortURL] || req.session.user_id !== urlDatabase[req.params.shortURL]["userID"]){
-    return res.send("<html><h1>You do not have access to this page! Please try again.</h1></html>")
+    return res.send("<html><h1>You have encountered an error. Either this short URL doesn't exist or you do not have access to this page! Please check and try again.</h1></html>")
   }
   if(req.session.user_id === users[req.session.user_id]["id"] && req.session.user_id === urlDatabase[req.params.shortURL]["userID"]){
     let usersUrls = urlsForUser(req.session.user_id);
@@ -159,7 +163,7 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortURL] = {}
     urlDatabase[shortURL]["longURL"] = req.body.longURL;
     urlDatabase[shortURL]["userID"] = req.session.user_id;
-    return res.redirect('/urls');
+    return res.redirect('/urls/'+ shortURL);
   }
   req.session.error = "You must be logged in to do that!";
   res.redirect("/login");
@@ -168,15 +172,16 @@ app.post("/urls", (req, res) => {
 //EDIT YOUR TINYURL
 app.post("/urls/:id", (req, res) => {
   if(!req.session.user_id){
+    req.session.error = "You must be logged in to do that!";
     return res.redirect("/login");
   }
-  if(req.session.user_id === users[req.session.user_id]["id"]){
+  let userUrls = urlsForUser(req.session.user_id);
+  if(req.session.user_id === users[req.session.user_id]["id"] && userUrls[req.params.id]){
     let shortURL = `${req.params.id}`
     urlDatabase[shortURL]["longURL"] = req.body.longURL;
     return res.redirect('/urls');
   }
-  req.session.error = "You must be logged in to do that!";
-  res.redirect("/login");
+  return res.send("<html><h1>You have encountered an error. Either this short URL doesn't exist or you do not have access to this page! Please check and try again.</h1></html>")
 });
 
 //DELETE URL
@@ -197,7 +202,6 @@ app.post("/register", (req, res) => {
   if(!req.body.email || !req.body.password){
     return res.status(400).render("urls_register", { error: "Please enter an email and a password" });
   }
-  
   if(findUserByEmail(req.body.email)){
     return res.status(400).render("urls_register", { error: "This email is already in use" })
   }
@@ -210,7 +214,6 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: hashedPassword 
   }
-  // res.cookie("user_id", userId);
   req.session.user_id = userId;
   res.redirect('/urls');
 })
