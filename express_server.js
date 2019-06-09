@@ -72,10 +72,23 @@ app.get("/", (req, res) => {
   res.redirect("/login");
 });
 
+//LOGIN PAGE
+app.get("/login", (req, res) => {
+  let templateVars = {
+    user: users[req.session.user_id],
+    login: "sign-up for an account"
+  }
+  if(req.session.error){
+    templateVars.error = req.session.error;
+  };
+  res.render("urls_login", templateVars);
+})
+
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    user: users[req.session.user_id]
+    user: users[req.session.user_id],
+    register: "sign-in"
   }
   res.render("urls_register", templateVars);
 })
@@ -135,16 +148,6 @@ app.get("/u/:shortURL", (req, res) => {
   res.send("<html><h1>This shortURL doesn't exist! Please try again.</h1></html>")
 });
 
-//LOGIN PAGE
-app.get("/login", (req, res) => {
-  let templateVars = {
-    user: users[req.session.user_id],
-  }
-  if(req.session.error){
-    templateVars.error = req.session.error;
-  };
-  res.render("urls_login", templateVars);
-})
 
 //********POST ROUTES********
 
