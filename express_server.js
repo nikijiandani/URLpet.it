@@ -108,7 +108,10 @@ app.get("/urls/:shortURL", (req, res) => {
   if(!req.session.user_id || req.session.user_id !== users[req.session.user_id]["id"]){
     return res.redirect("/login");
   }
-  if(req.session.user_id === users[req.session.user_id]["id"]){
+  if(!urlDatabase[req.params.shortURL] || req.session.user_id !== urlDatabase[req.params.shortURL]["userID"]){
+    return res.send("<html><h1>You do not have access to this page! Please try again.</h1></html>")
+  }
+  if(req.session.user_id === users[req.session.user_id]["id"] && req.session.user_id === urlDatabase[req.params.shortURL]["userID"]){
     let usersUrls = urlsForUser(req.session.user_id);
     let templateVars = { 
       shortURL: req.params.shortURL, 
@@ -117,12 +120,19 @@ app.get("/urls/:shortURL", (req, res) => {
     }
     return res.render("urls_show", templateVars);
   }
+  res.redirect("/urls");
 });
 
 //URL REDIRECTOR
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL]["longURL"];
-  res.redirect(longURL);
+  if(!urlDatabase[req.params.shortURL] || !urlDatabase[req.params.shortURL]["longURL"]){
+    return res.send("<html><h1>This shortURL doesn't exist! Please try again.</h1></html>")
+  }
+  if(urlDatabase[req.params.shortURL]["longURL"]){
+    const longURL = urlDatabase[req.params.shortURL]["longURL"];
+    return res.redirect(longURL);
+  }
+  res.send("<html><h1>This shortURL doesn't exist! Please try again.</h1></html>")
 });
 
 //LOGIN PAGE
