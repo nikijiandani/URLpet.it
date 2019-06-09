@@ -7,36 +7,40 @@
   <body>
     <!-- include header partial -->
     <% include ./partials/_header %>
-    <a href="/urls/new">Shorten another URL by clicking here.</a>
-    <table>
-      <tr class="bordered-bottom">
-        <th>Original URL's</th>
-        <th>Shortened forms</th>
-        <th></th>
-        <th></th>
-      </tr>
-      <% for(key in urls) { %>
-        <tr>
-            <td>
-              <% if(urls[key]["longURL"].length >= 30) { %>
-              <%= urls[key]["longURL"].substring(0, 30) %>...
-              <% } else { %>
-                    <%= urls[key]["longURL"] %>
-              <% } %>
-            </td>
-            <td><a href="http://localhost:8080/u/<%= key %>" target="_blank">http://localhost:8080/u/<%= key %></a></td>
-            <% if (locals. user) { %>
-            <td>
-                  <a href="/urls/<%= key %>" class="btn btn-outline-warning btn-sm">Edit</a>
-            </td>
-            <td>
-              <form method="POST" action="/urls/<%= key %>/delete">
-                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-              </form>
-            </td>
-            <% } %>
-        </tr>
-      <% } %>
+      <a href="/urls/new">Shorten another URL by clicking here.</a>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Original URL's</th>
+            <th scope="col">Shortened forms</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(key in urls) { %>
+            <tr>
+                <td scope="row">
+                  <% if(urls[key]["longURL"].length >= 30) { %>
+                  <%= urls[key]["longURL"].substring(0, 30) %>...
+                  <% } else { %>
+                        <%= urls[key]["longURL"] %>
+                  <% } %>
+                </td>
+                <td><a href="http://localhost:8080/u/<%= key %>" target="_blank">http://localhost:8080/u/<%= key %></a></td>
+                <% if (locals. user) { %>
+                <td>
+                      <a href="/urls/<%= key %>" class="btn btn-outline-warning btn-sm">Edit</a>
+                </td>
+                <td>
+                  <form method="POST" action="/urls/<%= key %>/delete">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                  </form>
+                </td>
+                <% } %>
+            </tr>
+          <% } %>
+        </tbody>
       </table>
     <!-- include footer -->
     <% include ./partials/_footer %>
