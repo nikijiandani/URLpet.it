@@ -76,7 +76,9 @@ app.get("/", (req, res) => {
 app.get("/login", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id],
-    login: "sign-up for an account"
+  }
+  if(req.session.user_id){
+    return res.redirect("/urls");
   }
   if(req.session.error){
     templateVars.error = req.session.error;
@@ -88,7 +90,6 @@ app.get("/login", (req, res) => {
 app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id],
-    register: "sign-in"
   }
   res.render("urls_register", templateVars);
 })
@@ -194,7 +195,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 // REGISTER A NEW USER
 app.post("/register", (req, res) => {
   if(!req.body.email || !req.body.password){
-    return res.status(400).render("urls_register", { error: "Email or password is invalid" });
+    return res.status(400).render("urls_register", { error: "Please enter an email and a password" });
   }
   
   if(findUserByEmail(req.body.email)){
@@ -214,7 +215,7 @@ app.post("/register", (req, res) => {
   res.redirect('/urls');
 })
 
-
+// USER LOGIN
 app.post("/login", (req, res) => {
   const user = findUserByEmail(req.body.email);
   if(!user || !req.body.password || !bcrypt.compareSync(req.body.password, user.password)){

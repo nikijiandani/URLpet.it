@@ -10,6 +10,9 @@ h3 {
   margin-top: 1em;
   margin-bottom: 1em;
 }
+.margin-top {
+  margin-top: 1em;
+}
 .table {
   width: 90%;
   text-align: left;
@@ -36,7 +39,7 @@ tbody tr:hover {
 .form-group {
   margin: auto;
   margin-bottom: 8px;
-  width: 280px;
+  width: 300px;
   text-align: left;
 }
 .btn-outline-primary {

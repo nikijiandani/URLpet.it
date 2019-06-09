@@ -7,14 +7,16 @@
   <body>
     <!-- include header partial -->
     <% include ./partials/_header %>
-
-  <h1>ShortURL: <%= shortURL %></h1>
-  <form action="/urls/<%= shortURL %>" method="POST">
-    <input type="text" name="longURL" value="<%= longURL %>" class="form-control">
-    <button type="submit" class="btn btn-outline-warning"> Save</button>
-  </form>
+    
+    <h3>ShortURL: <%= shortURL %></h3>
+    <form action="/urls/<%= shortURL %>" method="POST">
+      <div class="form-group">
+        <label for="longURL">Edit URL:</label>
+        <input type="text" name="longURL" value="<%= longURL %>" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-outline-warning"> Save</button>
+    </form>
   
-  <a href="/urls/new">Try shortening your own URL by clicking here.</a>
     <!-- include footer -->
     <% include ./partials/_footer %>
   </body>

@@ -8,9 +8,11 @@
     <header>
       <!-- include header partial -->
       <% include ./partials/_header %>
+      <p id="register" >If you do not have an account already, please use this link to <a href="/register">register</a></p>
     </header>
+    <h3 class="center">Login</h3>
     <% if(!locals.user) { %>
-    <form action="/login" method="POST">
+    <form class="margin-top" action="/login" method="POST">
 
       <div class="form-group">
         <label for="email">Email:</label>

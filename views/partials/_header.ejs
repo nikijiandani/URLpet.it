@@ -6,15 +6,8 @@
           <p>You are logged in as <%= user.email %> </p>
           <button type="submit" class="btn btn-outline-dark btn-sm">Logout</button>
         </form>
-    <% } else if (locals.login) { %>
-        <p id="register" >If you do not have an account already, please use this link to <a href="/register"><%= login %></a></p>
-      <!-- <a href="/register" class="btn btn-outline-primary center">Register</a>
-      <a href="/login" class="btn btn-outline-primary center">Login</a> -->
-    <% } else if (locals.register) { %>
-        <p id="register" >If you have registered an account already, please use this link to <a href="/login"><%= register %></a></p>
-      <!-- <a href="/register" class="btn btn-outline-primary center">Register</a>
-      <a href="/login" class="btn btn-outline-primary center">Login</a> -->
     <% } %>
+
     <% if(locals.error) { %>
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong><%= error %></strong>
