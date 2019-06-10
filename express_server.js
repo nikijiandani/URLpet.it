@@ -98,7 +98,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 })
 
-//CREATE NEW TINYURL 
+//CREATE NEW PETIT URL 
 app.get("/urls/new", (req, res) => {
   let cookieId = req.session.user_id;
   if(!cookieId){
@@ -156,7 +156,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 //********POST ROUTES********
 
-//CREATE A NEW TINYURL 
+//CREATE A NEW PETIT URL
 app.post("/urls", (req, res) => {
   if(req.session.user_id){
     let shortURL = generateRandomString();
@@ -169,7 +169,7 @@ app.post("/urls", (req, res) => {
   res.redirect("/login");
 });
 
-//EDIT YOUR TINYURL
+//EDIT YOUR PETIT URL
 app.post("/urls/:id", (req, res) => {
   if(!req.session.user_id){
     req.session.error = "You must be logged in to do that!";
@@ -236,5 +236,5 @@ app.post("/logout", (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Server Started!!! TinyURL is listening on port ${PORT}!`);
+  console.log(`Server Started!!! URLpet.it is listening on port ${PORT}!`);
 });

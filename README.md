@@ -1,4 +1,4 @@
-# TinyApp Project
+# URLpet.it Project
 
 URLpet.it is a full stack web application built with Node and Express that allows users to shorten long URL's(à la bit.ly).
 
