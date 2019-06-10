@@ -5,13 +5,14 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
+app.set("view engine", "ejs");
+
 app.use(cookieSession({
-  name: 'session',
+name: 'session',
   keys: ["myx1anuts", "ghxbchjxgyzxftdyc"]
 }));
-app.use(bodyParser.urlencoded({extended: true}));
 
-app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 
@@ -152,7 +153,6 @@ app.get("/u/:shortURL", (req, res) => {
   }
   res.send("<html><h1>This shortURL doesn't exist! Please try again.</h1></html>")
 });
-
 
 //********POST ROUTES********
 
