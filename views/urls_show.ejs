@@ -5,8 +5,10 @@
     <% include ./partials/_head %>
   </head>
   <body>
-    <!-- include header partial -->
-    <% include ./partials/_header %>
+    <header>
+      <!-- include header partial -->
+      <% include ./partials/_header %>
+    </header>
     
     <h3>ShortURL: <%= shortURL %></h3>
     <a href="http://localhost:8080/u/<%= shortURL %>" target="_blank">http://urlpet.it/u/<%= shortURL %></a>
@@ -18,7 +20,8 @@
       <button type="submit" class="btn btn-outline-warning"> Save</button>
     </form>
   
-    <!-- include footer -->
-    <% include ./partials/_footer %>
-  </body>
+    <footer>
+      <!-- include footer -->
+      <% include ./partials/_footer %>
+    </footer>
 </html>

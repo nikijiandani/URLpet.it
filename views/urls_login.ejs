@@ -9,25 +9,28 @@
       <!-- include header partial -->
       <% include ./partials/_header %>
       <p id="register" >If you do not have an account already, please use this link to <a href="/register">register</a></p>
+      <h3 class="center">Login</h3>
     </header>
-    <h3 class="center">Login</h3>
+    
     <% if(!locals.user) { %>
     <form class="margin-top" action="/login" method="POST">
-
+      <!-- Email -->
       <div class="form-group">
         <label for="email">Email:</label>
         <input class="form-control" type="text" name="email" >
       </div>
-
+      <!-- Password -->
       <div class="form-group">
         <label for="password">Password:</label>
         <input class="form-control" type="password" name="password" >
       </div>
-
       <button type="submit" class="btn btn-outline-primary">Login</button>
     <% } %>
     </form>
-    <!-- include footer -->
-    <% include ./partials/_footer %>
+
+    <footer>
+      <!-- include footer -->
+      <% include ./partials/_footer %>
+    </footer>
   </body>
 </html>

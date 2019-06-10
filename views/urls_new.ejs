@@ -8,9 +8,9 @@
     <header>
       <!-- include header partial -->
       <% include ./partials/_header %>
+      <h3>Create petit URL</h3>
     </header>
 
-    <h3>Create petit URL</h3>
     <form action="/urls" method="POST">
       <div class="form-group">
         <label for="longURL">Enter a URL:</label>
@@ -18,7 +18,10 @@
       </div>
       <button type="submit" class="btn btn-primary inline">Submit</button>
     </form>
-    <!-- include footer -->
-    <% include ./partials/_footer %>
+    
+    <footer>
+      <!-- include footer -->
+      <% include ./partials/_footer %>
+    </footer>
   </body>
 </html>
